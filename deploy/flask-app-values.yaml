@@ -1,0 +1,10 @@
+image:
+  repository: davidh83110/flask-app
+  tag: "0.0.1"
+
+env:
+  redis_host: "redis-master"
+
+EnvFrom:
+- secretRef:
+    name: flask-app-secrets

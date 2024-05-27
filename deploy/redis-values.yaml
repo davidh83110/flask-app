@@ -1,0 +1,6 @@
+auth:
+  enabled: true
+  existingSecret: "flask-app-secrets"
+  existingSecretPasswordKey: "REDIS_PASSWORD"
+
+architecture: standalone

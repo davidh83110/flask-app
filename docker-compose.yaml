@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  flask:
+    build:
+      context: .
+      args:
+        APP_VERSION: '0.1.0'  # hardcode here
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    environment:
+      - GUNICORN_BIND=0.0.0.0:3000
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=thispass
+      - IS_KUBERNETES=false
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6380:6379"
+    environment:
+      - REDIS_PASSWORD=thispass
+    command: "--requirepass thispass"

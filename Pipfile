@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+redis = "*"
+prometheus-client = "*"
+gunicorn = "*"
+prometheus-flask-exporter = "*"
+flask-restful = "*"
+flask-restful-swagger = "*"
+markupsafe = "==2.0.1"
+flask-swagger-ui = "*"
+flask-testing = "*"
+app = "*"
+pytest = "*"
+python-json-logger = "*"
+json-logging = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+python_full_version = "3.10.12"
