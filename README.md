@@ -21,7 +21,6 @@ docker run -p 3000:3000 -it -e REDIS_HOST='192.168.68.112' flask-app
 ```
 
 ## Development
----
 ### Run under Pipenv Shell  
 ```bash
 pipenv shell
