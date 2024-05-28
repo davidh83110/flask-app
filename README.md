@@ -2,8 +2,9 @@
 This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for API documentations.
 - [http://localhost:3000](http://localhost:3000)
 - [http://localhost:3000/health](http://localhost:3000/health)
-- [http://localhost:3000/metrics](http://localhost:3000)
-- [http://localhost:3000](http://localhost:3000)
+- [http://localhost:3000/metrics](http://localhost:3000/metrics)
+- [http://localhost:3000/swagger](http://localhost:3000/swagger)
+  - Visit Swagger for more V1 API details.
 
 ### Table of Content
 - [Data Migration](#data-migration)
@@ -19,6 +20,8 @@ This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for 
     + [Running in local with Kind and Helm Chart](#running-in-local-with-kind-and-helm-chart)
   + [Check Result](#check-result)
 - [Development](#development)
+- [CI/CD](#cicd-)
+- [Versioning](#versioning)
 
 ## Data Migration
 The `/history` API will require some history data in place so that it can return to user,
@@ -130,3 +133,14 @@ pipenv shell
 pytest
 ```
 
+
+## CI/CD 
+I use `Github Actions` to implement a simple CI/CD pipeline, 
+which includes `unittest`, `SAST evulation`, `docker build and push`, and `helm package and upload`.
+- Please visit [ci-build.yaml](.github%2Fworkflows%2Fci-build.yaml).
+- We could possibly optimize the pipeline to be faster and comment some messages on the Pull Request, but I just ignore those things since it is a demo only.
+
+
+## Versioning
+I use a [VERSION](VERSION) file to control the Application version, which will be the `APP_VERSION` when we build the Docker Image.
+But in real environment, I think we can do it with `tags triggering`, `auto increament`, or integrate with `Jira`/`Github Project`. 
