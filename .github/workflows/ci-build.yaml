@@ -158,7 +158,7 @@ jobs:
     - name: Run chart-releaser
       uses: helm/chart-releaser-action@v1.6.0
       with:
-        skip_packaging: "true"
+        skip_packaging: "yes"
         charts_dir: ./deploy/charts/
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
