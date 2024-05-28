@@ -18,29 +18,6 @@ PrometheusMetrics(app, api)
 register_error_handlers(app)
 
 
-# Setup access log
-# @app.after_request
-# def after_request(response):
-#     log_details = {
-#         'remote_addr': request.remote_addr,
-#         'method': request.method,
-#         'scheme': request.scheme,
-#         'path': request.full_path,
-#         'status_code': response.status_code
-#     }
-#     access_logger.info(json.dumps({
-#         'remote_addr': '%s',
-#         'method': '%s',
-#         'scheme': '%s',
-#         'path': '%s',
-#         'status_code': '%s'
-#     }),
-#         log_details['remote_addr'],
-#         log_details['method'],
-#         log_details['scheme'],
-#         log_details['path'],
-#         log_details['status_code'])
-#     return response
 @app.after_request
 def after_request(response):
     log_details = {
