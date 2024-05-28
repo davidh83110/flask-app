@@ -25,6 +25,7 @@ This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for 
 - [Development](#development)
 - [CI/CD](#cicd-)
 - [Versioning](#versioning)
+- [Logging](#logging)
 
 ## Data Migration
 The `/history` API will require some history data in place so that it can return to user,
@@ -146,6 +147,10 @@ which includes `unittest`, `SAST evulation`, `docker build and push`, and `helm 
 - Please visit [ci-build.yaml](.github%2Fworkflows%2Fci-build.yaml).
 - SAST tool - [bandit](https://github.com/PyCQA/bandit)
 - We could possibly optimize the pipeline to be faster and comment some messages on the Pull Request, but I just ignore those things since it is a demo only.
+
+The artifacts of this CI pipeline are --
+- Docker Image on Docker Hub -- [davidh83110/flask-app](https://hub.docker.com/repository/docker/davidh83110/flask-app/general)
+- Helm Package on [Github Pages](https://davidh83110.github.io/flask-app/)
 
 
 ## Versioning
