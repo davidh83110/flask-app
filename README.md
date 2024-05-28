@@ -1,5 +1,7 @@
 # Flask Application
-![badge-python.svg](docs%2Fimgs%2Fbadge-python.svg)
+![badge-python.svg](docs%2Fimgs%2Fbadge-python.svg) 
+![badge-ghaction.svg](https://github.com/davidh83110/flask-app/actions/workflows/ci-build.yaml/badge.svg) 
+[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
 This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for API documentations.
 - [http://localhost:3000](http://localhost:3000)
