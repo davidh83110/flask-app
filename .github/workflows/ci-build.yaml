@@ -159,6 +159,6 @@ jobs:
       uses: helm/chart-releaser-action@v1.6.0
       with:
         charts_dir: ./deploy/charts/
-        skip_packaging: "yes"
+#        skip_packaging: "yes"
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
