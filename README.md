@@ -6,6 +6,9 @@ This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for 
 - [http://localhost:3000/swagger](http://localhost:3000/swagger)
   - Visit Swagger for more V1 API details.
 
+🐳 Docker Registry is here -- [davidh83110/flask-app](https://hub.docker.com/repository/docker/davidh83110/flask-app/general)
+
+
 ### Table of Content
 - [Data Migration](#data-migration)
 - [How to Run](#How-to-Run)
