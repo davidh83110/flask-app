@@ -166,6 +166,7 @@ jobs:
         export PATH="$install_dir:$PATH"
         
         cd deploy/charts
+        mkdir .cr-release-packages
         cr upload -o davidh83110 -r flask-app -c "$(git rev-parse HEAD)" \
           --token ${{ secrets.GITHUB_TOKEN }} \
           --packages-with-index --push --skip-existing \
