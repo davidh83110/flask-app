@@ -118,6 +118,9 @@ jobs:
     - name: Start Application for Testing
       run: |
         docker run -p 3000:3000 --name flask-app -e REDIS_HOST="redis" -itd flask-app:latest
+        docker logs flask-app
+        echo "curl -L http://127.0.0.1:3000/health"
+        curl -L http://127.0.0.1:3000/health
         if [[ $(curl -L http://127.0.0.1:3000/health | jq -r .status) == "healthy" ]]; then 
           echo "container is healthy";
         else
