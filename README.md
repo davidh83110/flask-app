@@ -1,6 +1,9 @@
 # Flask Application
 This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for API documentations.
 - [http://localhost:3000](http://localhost:3000)
+- [http://localhost:3000/health](http://localhost:3000/health)
+- [http://localhost:3000/metrics](http://localhost:3000)
+- [http://localhost:3000](http://localhost:3000)
 
 ### Table of Content
 - [Data Migration](#data-migration)
@@ -119,5 +122,11 @@ pipenv run python3 main.py
 ```bash
 pipenv install flask ...
 pipenv update
+```
+
+### Run Unittest
+```commandline
+pipenv shell
+pytest
 ```
 

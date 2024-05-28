@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import jsonify
+from flask import jsonify, Response
 import time
 from prometheus_client import generate_latest
 from clients.redis_client import redis_client
@@ -29,4 +29,4 @@ class Health(Resource):
 
 class Metrics(Resource):
     def get(self):
-        return generate_latest(), 200, {'Content-Type': 'text/plain; charset=utf-8'}
+        return Response(generate_latest(), 200, {'Content-Type': 'text/plain; charset=utf-8'})
