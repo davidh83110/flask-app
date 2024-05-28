@@ -4,11 +4,13 @@ on:
   pull_request:
     branches:
       - main
+      - testing
   push:
     tags:
       - '*'
     branches:
       - main
+      - testing
 
 env:
   DOCKER_REGISTRY: davidh83110/flask-app
