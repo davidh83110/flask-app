@@ -150,20 +150,35 @@ jobs:
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-    - name: Package Helm Chart
+    - name: Package Helm Chart and Upload
       run: |
-        git fetch
-        helm package deploy/charts -d .cr-release-packages
-        helm repo index .cr-release-packages --url https://davidh83110.github.io/flask-app
+        #git fetch
+        #helm package deploy/charts -d .cr-release-packages
+        #helm repo index .cr-release-packages --url https://davidh83110.github.io/flask-app
+        
+        ## Create release and upload artiface by helm/chart-releaser(cr)
+        install_dir="$RUNNER_TOOL_CACHE/cr"
+        if [[ ! -d "$install_dir" ]]; then mkdir -p "$install_dir"; fi
+        echo "Installing chart-releaser..."
+        curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.6.1/chart-releaser_1.6.1_linux_amd64.tar.gz"
+        tar -xzf cr.tar.gz -C "$install_dir"
+        rm -f cr.tar.gz
+        export PATH="$install_dir:$PATH"
+        
+        cr upload -o davidh83110 -r flask-app -c "$(git rev-parse HEAD)" \
+          --token ${{ secrets.GITHUB_TOKEN }} \
+          --packages-with-index --push --skip-existing \
+          --pages-branch gh-pages
 
-    - name: Run chart-releaser
-      uses: helm/chart-releaser-action@v1.6.0
-      with:
-        skip_packaging: "yes"
-        charts_dir: ./deploy/charts/
-        pages_branch: "gh-pages"
-#        skip_existing: "yes"
-      env:
-        CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+#    - name: Run chart-releaser
+#      uses: helm/chart-releaser-action@v1.6.0
+#      with:
+#        skip_packaging: "yes"
+#        charts_dir: ./deploy/charts/
+#        pages_branch: "gh-pages"
+##        skip_existing: "yes"
+#      env:
+#        CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
 # TODO: github action output message
