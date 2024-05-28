@@ -3,7 +3,11 @@ This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for 
 - [http://localhost:3000](http://localhost:3000)
 
 ### Table of Content
+- [Data Migration](#data-migration)
 - [How to Run](#How-to-Run)
+  + [Quick Run](#quick-run)
+    + [Docker Compose](#docker-compose)
+    + [Kind and Helm Chart](#kind-and-helm-chart)
   + [Prerequisites](#prerequisites)
   + [Setup Environment](#setup-environment)
   + [Start Flask Application](#start-flask-application)
@@ -13,15 +17,41 @@ This is a Flak RESTfulAPI. Please run the application and vivsit `/swagger` for 
   + [Check Result](#check-result)
 - [Development](#development)
 
+## Data Migration
+The `/history` API will require some history data in place so that it can return to user,
+so we have [scripts/migrations.py](scripts%2Fmigrations.py) here for helping to inject initial data. 
+The script will be executed when we run [scripts/entrypoint.sh](scripts%2Fentrypoint.sh) in Docker environment.
+
+If you are not in Docker environment, please run it manually before start the application.
+```commandline
+cd scripts
+python3 migrations.py
+```
+
 ## How to Run
 This Page will only focus on Flask application, 
 if you need any information about `Helm` or run in `Kubernetes`, 
 please visit [deploy/README.md](deploy%2FREADME.md).
 
+### Quick Run
+#### Docker Compose
+```commandline
+docker-compose up --build -d
+```
+- Hardcode the password in the `docker-compose.yaml`, it can also use `docker-compose secret from file`.
+
+#### Kind and Helm Chart
+```commandline
+cd ./deploy
+sh ./startup.sh
+```
+- More information, please visit [deploy/README.md](deploy%2FREADME.md).
+
 ### Prerequisites
 - Python >= 3.10
 - Pipenv
 - Docker 
+- Redis Server
 
 ### Setup Environment
 - Install Pipenv 
@@ -32,6 +62,10 @@ please visit [deploy/README.md](deploy%2FREADME.md).
 - Install Dependencies
   ```commandline
   pipenv install --system --deploy --ignore-pipfile
+  ```
+- Start Redis Locally
+  ```commandline
+   docker run -p 6379:6379 -itd redis:alpine                  
   ```
   
 ### Start Flask Application

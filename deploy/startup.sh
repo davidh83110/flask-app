@@ -24,6 +24,7 @@ helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis -f ./redis-
 sleep 3
 
 ## Deploy Flask
+sleep 15 # wait for redis and Nginx are ready
 helm upgrade -i flask-app ./charts -f ./flask-app-values.yaml
 
 ## Check results

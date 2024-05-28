@@ -18,7 +18,7 @@ services:
   redis:
     image: "redis:alpine"
     ports:
-      - "6380:6379"
+      - "6379:6379"
     environment:
       - REDIS_PASSWORD=thispass
     command: "--requirepass thispass"
