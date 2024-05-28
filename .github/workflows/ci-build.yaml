@@ -165,9 +165,6 @@ jobs:
         rm -f cr.tar.gz
         export PATH="$install_dir:$PATH"
         
-        ls -l
-        ls -l deploy/charts
-        cd deploy/charts
         
         cr upload -o davidh83110 -r flask-app -c "$(git rev-parse HEAD)" \
           --token ${{ secrets.GITHUB_TOKEN }} \
