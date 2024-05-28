@@ -60,25 +60,15 @@ jobs:
       uses: helm/chart-testing-action@v2.6.1
       with:
         version: v3.11.0
-    - name: Run chart-testing (list-changed)
-      id: list-changed
-      run: |
-        changed=$(ct list-changed --chart-dirs "deploy" --target-branch ${{ github.event.repository.default_branch }})
-        if [[ -n "$changed" ]]; then
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-        fi
-
+    ## TODO: only trigger if deploy/charts has changes.
     - name: Run chart-testing (lint)
-      if: steps.list-changed.outputs.changed == 'true'
-      run: ct lint --chart-dirs "deploy" --target-branch ${{ github.event.repository.default_branch }}
+      run: ct lint --chart-dirs "deploy"
 
     - name: Create kind cluster
-      if: steps.list-changed.outputs.changed == 'true'
       uses: helm/kind-action@v1.10.0
 
     - name: Run chart-testing (install)
-      if: steps.list-changed.outputs.changed == 'true'
-      run: ct install --chart-dirs "deploy" --target-branch ${{ github.event.repository.default_branch }}
+      run: ct install --chart-dirs "deploy"
 
   security:
     runs-on: ubuntu-latest
@@ -117,7 +107,8 @@ jobs:
       uses: docker/setup-buildx-action@v1
     - name: Build Image
       run: |
-        docker build -t flask-app .
+        APP_VERSION=$(cat VERSION)
+        docker build -t flask-app --build-arg APP_VERSION=$APP_VERSION --no-cache
     - name: Start Application for Testing
       run: |
         # 172.17.0.1 is the Docker main network
@@ -138,8 +129,9 @@ jobs:
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
     - name: Push Image to Docker Hub
       run: |
-        docker tag flask-app:latest "${{ env.DOCKER_REGISTRY }}":"${{ github.ref_name }}"
-        docker push "${{ env.DOCKER_REGISTRY }}":"${{ github.ref_name }}"
+        APP_VERSION=$(cat VERSION)
+        docker tag flask-app:latest "${{ env.DOCKER_REGISTRY }}":$APP_VERSION
+        docker push "${{ env.DOCKER_REGISTRY }}":$APP_VERSION
     - name: Log out from Docker Hub
       run: docker logout
 
