@@ -152,6 +152,7 @@ jobs:
 
     - name: Package Helm Chart
       run: |
+        git fetch
         helm package deploy/charts -d .cr-release-packages
         helm repo index .cr-release-packages --url https://davidh83110.github.io/flask-app
 
@@ -160,5 +161,6 @@ jobs:
       with:
         skip_packaging: "yes"
         charts_dir: ./deploy/charts/
+        pages_branch: "gh-pages"
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
