@@ -14,9 +14,8 @@ env:
   DOCKER_REGISTRY: davidh83110/flask-app
 
 jobs:
-  build:
+  unittest:
     runs-on: ubuntu-latest
-
     services:
       redis:
         image: redis
@@ -27,8 +26,59 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv --no-cache-dir
+        pipenv install --system --deploy --ignore-pipfile
+    - name: Run Unittest
+      run: |
+        pipenv run pytest
 
+  helm-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+    - name: Setup Helm
+      uses: azure/setup-helm@v4.2.0
+      with:
+        version: v3.14.4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+        check-latest: true
+    - name: Set up chart-testing
+      uses: helm/chart-testing-action@v2.7.0
+    - name: Run chart-testing (list-changed)
+      id: list-changed
+      run: |
+        changed=$(ct list-changed --chart-dir "deploy/charts" --target-branch ${{ github.event.repository.default_branch }})
+        if [[ -n "$changed" ]]; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        fi
 
+    - name: Run chart-testing (lint)
+      if: steps.list-changed.outputs.changed == 'true'
+      run: ct lint --chart-dir "deploy/charts" --target-branch ${{ github.event.repository.default_branch }}
+
+    - name: Create kind cluster
+      if: steps.list-changed.outputs.changed == 'true'
+      uses: helm/kind-action@v1.10.0
+
+    - name: Run chart-testing (install)
+      if: steps.list-changed.outputs.changed == 'true'
+      run: ct install --chart-dir "deploy/charts" --target-branch ${{ github.event.repository.default_branch }}
+
+  security:
+    runs-on: ubuntu-latest
     steps:
     - name: Check out the repository
       uses: actions/checkout@v2
@@ -40,14 +90,26 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install bandit --no-cache-dir
-        pip install pipenv --no-cache-dir
-        pipenv install --system --deploy --ignore-pipfile
-    - name: Run Unittest
-      run: |
-        pipenv run pytest
     - name: Run Bandit for Python Common Security Check - SAST(Static Application Security Testing)
       run: |
         bandit -c bandit.yaml -r .
+
+  build-docker:
+    runs-on: ubuntu-latest
+    needs: [unittest, security]
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
     - name: Docker buildx Setup
       uses: docker/setup-buildx-action@v1
     - name: Build Image
@@ -55,16 +117,14 @@ jobs:
         docker build -t flask-app .
     - name: Start Application for Testing
       run: |
-        echo "Redis container IP: ${{ job.services.redis.host }}"
-        docker run -p 3000:3000 --name flask-app -e REDIS_HOST="${{ job.services.redis.host }}" -itd flask-app:latest
-        if [[ $(curl -L http://127.0.0.1:3000/health | jq .status) -eq "healthy" ]]; then 
+        docker run -p 3000:3000 --name flask-app -e REDIS_HOST="redis" -itd flask-app:latest
+        if [[ $(curl -L http://127.0.0.1:3000/health | jq -r｀ .status) == "healthy" ]]; then 
           echo "container is healthy";
         else
           docker logs flask-app
           echo "/health didn't return 200, hence pipeline will exit"
           exit 1
         fi;
-
     - name: Login to Docker Hub
       run: |
         docker login "${{ env.DOCKER_REGISTRY }}" -u "${{ secrets.DOCKER_USER }}" -p "${{ secrets.DOCKER_PASSWORD }}"
@@ -74,6 +134,26 @@ jobs:
         docker push "${{ env.DOCKER_REGISTRY }}":"${{ github.ref_name }}"
     - name: Log out from Docker Hub
       run: docker logout
-    - name: Package Helm Chart
-      ## TODO: helm dry run and lint tests
-      run: helm package deploy/charts -d chart-"${{ github.ref_name }}"
+
+
+  build-helm:
+    permissions:
+      contents: write
+    needs: [helm-test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Configure Git
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+    - name: Install Helm
+      uses: azure/setup-helm@v4
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Run chart-releaser
+      uses: helm/chart-releaser-action@v1.6.0
+      env:
+        CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
