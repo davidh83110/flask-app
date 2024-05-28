@@ -62,13 +62,13 @@ jobs:
         version: v3.11.0
     ## TODO: only trigger if deploy/charts has changes.
     - name: Run chart-testing (lint)
-      run: ct lint --chart-dirs "deploy"
+      run: ct lint --chart-dirs "$GITHUB_WORKSPACE"/deploy
 
     - name: Create kind cluster
       uses: helm/kind-action@v1.10.0
 
     - name: Run chart-testing (install)
-      run: ct install --chart-dirs "deploy"
+      run: ct install --chart-dirs "$GITHUB_WORKSPACE"/deploy
 
   security:
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
     - name: Build Image
       run: |
         APP_VERSION=$(cat VERSION)
-        docker build -t flask-app --build-arg APP_VERSION=$APP_VERSION --no-cache
+        docker build --build-arg APP_VERSION=$APP_VERSION --no-cache -t flask-app .
     - name: Start Application for Testing
       run: |
         # 172.17.0.1 is the Docker main network
