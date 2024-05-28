@@ -151,12 +151,14 @@ jobs:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Package Helm Chart
-      run: helm package deploy/charts -d deploy/charts
+      run: |
+        helm package deploy/charts -d deploy/charts
+        helm repo index ./deploy/charts --url https://davidh83110.github.io/flask-app
 
     - name: Run chart-releaser
       uses: helm/chart-releaser-action@v1.6.0
       with:
-        charts_dir: deploy
+        charts_dir: ./deploy/charts
         skip_packaging: "yes"
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
