@@ -117,7 +117,8 @@ jobs:
         docker build -t flask-app .
     - name: Start Application for Testing
       run: |
-        docker run -p 3000:3000 --name flask-app -e REDIS_HOST="redis" -itd flask-app:latest
+        # 172.17.0.1 is the Docker main network
+        docker run -p 3000:3000 --name flask-app -e REDIS_HOST=172.17.0.1 -itd flask-app:latest
         sleep 3
         docker logs flask-app
         echo "curl -L http://127.0.0.1:3000/health"
@@ -157,9 +158,13 @@ jobs:
       env:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+    - name: Package Helm Chart
+      run: helm package deploy/charts -d deploy/charts
+
     - name: Run chart-releaser
       uses: helm/chart-releaser-action@v1.6.0
       with:
         charts_dir: deploy/charts
+        skip_packaging: "yes"
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
