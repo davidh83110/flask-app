@@ -144,9 +144,16 @@ pytest
 I use `Github Actions` to implement a simple CI/CD pipeline, 
 which includes `unittest`, `SAST evulation`, `docker build and push`, and `helm package and upload`.
 - Please visit [ci-build.yaml](.github%2Fworkflows%2Fci-build.yaml).
+- SAST tool - [bandit](https://github.com/PyCQA/bandit)
 - We could possibly optimize the pipeline to be faster and comment some messages on the Pull Request, but I just ignore those things since it is a demo only.
 
 
 ## Versioning
 I use a [VERSION](VERSION) file to control the Application version, which will be the `APP_VERSION` when we build the Docker Image.
 But in real environment, I think we can do it with `tags triggering`, `auto increament`, or integrate with `Jira`/`Github Project`. 
+
+
+## Logging
+![logging.png](docs%2Fimgs%2Flogging.png)
+The access and error logs of Gunicorn/Flask will be shown as JSON format, 
+it is better for most of the log streamer like Filebeat. 
