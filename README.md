@@ -1,6 +1,14 @@
 # Flask App
 
-## Running in local
+## Running in local with Kind and Helm Chart
+```commandline
+kind create cluster -n flask
+kind get clusters
+helm repo add davidh83110 https://davidh83110.github.io/flask-app/
+helm upgrade -i flask-app davidh83110/flask-app
+```
+
+## Running in local without Docker
 ```commandline
 gunicorn --bind 0.0.0.0 \
               --access-logfile flask-app-gunicorn.log \
