@@ -152,9 +152,9 @@ jobs:
 
     - name: Package Helm Chart and Upload
       run: |
-        #git fetch
-        #helm package deploy/charts -d .cr-release-packages
-        #helm repo index .cr-release-packages --url https://davidh83110.github.io/flask-app
+        git fetch
+        helm package deploy/charts -d .cr-release-packages
+        helm repo index .cr-release-packages --url https://davidh83110.github.io/flask-app
         
         ## Create release and upload artiface by helm/chart-releaser(cr)
         install_dir="$RUNNER_TOOL_CACHE/cr"
@@ -166,7 +166,6 @@ jobs:
         export PATH="$install_dir:$PATH"
         
         cd deploy/charts
-        mkdir .cr-release-packages
         cr upload -o davidh83110 -r flask-app -c "$(git rev-parse HEAD)" \
           --token ${{ secrets.GITHUB_TOKEN }} \
           --packages-with-index --push --skip-existing \
