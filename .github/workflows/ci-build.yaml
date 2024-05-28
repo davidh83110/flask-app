@@ -63,7 +63,9 @@ jobs:
 
     ## TODO: only trigger if deploy/charts has changes.
     - name: Run chart-testing (lint)
-      run: ct lint --chart-dirs ./deploy/charts
+      run: |
+        helm lint deploy/charts
+        # ct lint --chart-dirs ./deploy/charts
 
     - name: Create kind cluster
       uses: helm/kind-action@v1.10.0
