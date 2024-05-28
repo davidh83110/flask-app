@@ -41,12 +41,15 @@ please visit [deploy/README.md](deploy%2FREADME.md).
 
 ### Quick Run
 #### Docker Compose
+![docker-compose.png](docs%2Fimgs%2Fdocker-compose.png =250x250)
 ```commandline
 docker-compose up --build -d
 ```
 - Hardcode the password in the `docker-compose.yaml`, it can also use `docker-compose secret from file`.
 
 #### Kind and Helm Chart
+![kind.png](docs%2Fimgs%2Fkind.png =250x250)
+![kind-finish.png](docs%2Fimgs%2Fkind-finish.png =250x250)
 ```commandline
 cd ./deploy
 sh ./startup.sh

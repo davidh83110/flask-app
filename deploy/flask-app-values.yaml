@@ -1,6 +1,6 @@
 image:
   repository: davidh83110/flask-app
-  tag: "0.1.0"
+  tag: "0.1.1"
 
 env:
   redis_host: "redis-master"
